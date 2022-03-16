@@ -7,7 +7,6 @@
 # 
 # The following module provides a graphical user interface shell for the DSP journaling program.
 
-#commentingggggg jgjkgjkghgjgh
 #commentinggggggg
 #ghfhfgfhg
 import tkinter as tk
@@ -274,11 +273,11 @@ class Body(tk.Frame):
             self.firstDraw=False
         else:
             if(self.night):
-                style.configure("Treeview", background="grey", foreground="grey", fieldbackground="grey")
+                style.configure("Treeview", background="grey" fieldbackground="grey")
                 self.entry_editor.config(bg="grey")
                 self.viewer.config(bg="grey")
             if(not self.night):
-                style.configure("Treeview", background="white", foreground="white", fieldbackground="white")
+                style.configure("Treeview", background="white", fieldbackground="white")
                 self.entry_editor.config(bg="white")
                 self.viewer.config(bg="white")
         
