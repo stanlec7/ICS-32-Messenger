@@ -136,14 +136,16 @@ class Body(tk.Frame):
 
     def set_view_entry(self, text:str, user=None):
         #self.viewer.delete(0.0, 'end')
-        if user == "insert the users username":
+        if user == None:
             # change color text into a color like blue
+            printed = f'Me: {text}'
+            self.viewer.insert("end", printed+"\n")
             pass
         else:
             # if user is not us, then the text will be a different color like red
+            printed = f'{user}: {text}'
+            self.viewer.insert("end", printed+"\n")
             pass
-        printed = f'{user}: {text}'
-        self.viewer.insert("end", printed+"\n")
         self.entry_editor.delete(0.0, 'end')
         
         
