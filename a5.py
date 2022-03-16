@@ -10,7 +10,6 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 from Profile import Post, Profile
-from NaClProfile import NaClProfile
 from ds_messenger import DirectMessage, DirectMessenger
 
 
@@ -38,9 +37,15 @@ class Body(tk.Frame):
         self.dm=None
 
     def add_to_dm_dict(self, dm:DirectMessenger):
+        """
+        add DirectMessage obj to dictionary in body class
+        """
         self.dm_dict[dm.username] = dm
 
     def set_my_pf(self, pf:Profile,dm:DirectMessenger):
+        """
+        sets variable _my_pf_ to DirectMessenger obj of sender
+        """
         self._my_pf=pf
         self.dm=dm
 
@@ -55,12 +60,18 @@ class Body(tk.Frame):
 
     
     def node_select(self, event):
+        """
+        which post is being selected (a5)
+        """
         index = int(self.posts_tree.selection()[0])
         entry = self._posts[index].entry
         self.set_text_entry(entry)
 
 
     def pf_node_select(self,entry):
+        """
+        which profile is being selected in treeview
+        """
         try:
             index = int(self.posts_tree.selection()[0])
             entry=""
@@ -441,6 +452,7 @@ class MainApp(tk.Frame):
     def night_on(self):
         """
         Turn on night mode.
+        Enabled through menu bar "Option" -> "Dark Mode On"
         """
         self.footer.config(bg="grey")
         self.body._body_to_night()
@@ -449,6 +461,7 @@ class MainApp(tk.Frame):
     def night_off(self):
         """
         Turn off night mode.
+        Turn off night mode through menu bar "Option" -> "Dark Mode Off"
         """
         self.footer.config(bg="")
         self.body._body_to_night_off()
@@ -468,7 +481,9 @@ class MainApp(tk.Frame):
         menu_file.add_command(label='Add User', command=self.add_user)
         options_menu = tk.Menu(menu_bar)
         menu_bar.add_cascade(menu=options_menu, label='Options')
-        options_menu.add_command(label='Night Mode On', command=self.night_on)
+
+        
+        options_menu.add_command(label='Night Mode On', command=self.night_on)        
         options_menu.add_command(label='Night Mode Off', command=self.night_off)
         self.body = Body(self.root, self._current_profile)
         self.body.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
@@ -486,6 +501,7 @@ class MainApp(tk.Frame):
             pass
         finally:
             self.root.after(5000,self.check_new_msg)
+
 
 
 if __name__ == "__main__":
