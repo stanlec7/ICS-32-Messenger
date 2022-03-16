@@ -41,6 +41,7 @@ class Body(tk.Frame):
         self._draw()
         self._current_user=None
         self.dm_dict={}
+        self.rec_dm=None
         self._my_pf=None
         self.dm=None
 
@@ -55,8 +56,9 @@ class Body(tk.Frame):
         textList=self.dm.retrieve_new()
         print('get_new_msg testList:', textList)
         for p in range(len(textList)):
-            text=textList[p]
-            self.viewer.insert(0.0, str(text)+"\n")
+            text=textList[p][2]
+            #self.viewer.insert(0.0, str(text)+"\n")
+            self.set_view_entry(str(text), textList[p][1])
 
     
     """
@@ -101,22 +103,37 @@ class Body(tk.Frame):
             pass
 
     def set_view_when_click_pf(self,dm:DirectMessenger):
-        print("inside set_view_when_click_pf")
-        print("should be newusercreated dm", dm.username)
+        #print("inside set_view_when_click_pf")
+        #print("should be newusercreated dm", dm.username)
         textList=dm.retrieve_all()
-        # textList contains a list of tuples in the order of (timestamp, user, message)
-        recipientDm = DirectMessenger("168.235.86.101","guesswhat", "idk")
+        
+        
+        recipientDm = DirectMessenger("168.235.86.101","newestuser2", "verystrongpwd2")
         textListRecipient=recipientDm.retrieve_all()
+        print("textListRecipient",textListRecipient)
         allText=textList + textListRecipient
         allText.sort(key=lambda tup:tup[0])
         
 
-        for p in range(len(allText)):
-            text=allText[p]
+
+        '''
+        for p in range(len(textList)):
+            text=textList[p][2]
+            #text=allText[p][2]
             print("text",text)
-            self.set_view_entry(str(text)+'\n', user=None)
+            self.set_view_entry(str(text), textList[p][1])
+            #self.set_view_entry(str(text), allText[p][1])
+            #self.set_view_entry(str(text)+'\n', user=None)
             #if (
-            self.viewer.insert(0.0, str(text)+"\n")
+            #self.viewer.insert(0.0, str(text)+"\n")
+        '''
+        
+        for p in range(len(allText)):
+            text=allText[p][2]
+            print("text",text)
+            self.set_view_entry(str(text), allText[p][1])
+            #self.viewer.insert(0.0, str(text)+"\n")
+        
 
     
     """
@@ -142,9 +159,17 @@ class Body(tk.Frame):
 
     def set_view_entry(self, text:str, user=None):
         #self.viewer.delete(0.0, 'end')
-        if user == 'me':
+        if user == None:
+            # change color text into a color like blue
+            #printed = f'Me: {text}'
+            printed=f'newestuser1: {text}'
+            self.viewer.insert("end", printed+"\n")
             pass
-        self.viewer.insert("end", text+"\n")
+        else:
+            # if user is not us, then the text will be a different color like red
+            printed = f'{user}: {text}'
+            self.viewer.insert("end", printed+"\n")
+            pass
         self.entry_editor.delete(0.0, 'end')
         
         
@@ -174,9 +199,9 @@ class Body(tk.Frame):
                 usr = usr[:24] + "..."
             
             self.posts_tree.insert('', id, id, text=pf[p])
-            '''here should be guesswhat'''
-            dm=DirectMessenger("168.235.86.101", "guesswhat","idk")
-            self.add_to_dm_dict(dm)
+            self.rec_dm=DirectMessenger("168.235.86.101", "newestuser2","verystrongpwd2")
+            
+            #self.add_to_dm_dict(dm)
             print("self.posts_tree")
 
     def insert_profile(self, pf:Profile):
@@ -406,11 +431,10 @@ class MainApp(tk.Frame):
 
         
         #self._current_profile.generate_keypair()
-        '''here should be newusercreated '''
-        self._current_profile.username="newusercreated"
-        self._current_profile.password="strongpassword"
+        self._current_profile.username="newestuser"
+        self._current_profile.password="verystrongpwd"
         self._current_profile.bio=None
-        self.dm=DirectMessenger("168.235.86.101","newusercreated","strongpassword")
+        self.dm=DirectMessenger("168.235.86.101","newestuser","verystrongpwd")
         self.body.reset_ui()
         self._current_profile.save_profile(self._profile_filename)
         self.body.set_my_pf(self._current_profile,self.dm)
@@ -433,10 +457,9 @@ class MainApp(tk.Frame):
         #self._current_profile = NaClProfile()
         self._current_profile = Profile()
         self._current_profile.dsuserver="168.235.86.101"
-        '''here should be newusercreated'''
-        self._current_profile.username="newusercreated"
-        self._current_profile.password="strongpassword"
-        self.dm=DirectMessenger("168.235.86.101","newusercreated","strongpassword")
+        self._current_profile.username="newestuser"
+        self._current_profile.password="verystrongpwd"
+        self.dm=DirectMessenger("168.235.86.101","newestuser","verystrongpwd")
         print("filename",self._profile_filename)
         #self._current_profile.save_profile(self._profile_filename)
         self._current_profile.load_profile(self._profile_filename)
@@ -458,9 +481,8 @@ class MainApp(tk.Frame):
         #print('filename',filename.name)
         pf=Profile()
         pf.dsuserver="168.235.86.101"
-        '''here should be guesswhat'''
-        pf.username="guesswhat"
-        pf.password="idk"
+        pf.username="newestuser2"
+        pf.password="verystrongpwd2"
         pf.save_profile(filename.name)
         #print('pf created going to load pf')
         pf.load_profile(filename.name)
@@ -471,6 +493,7 @@ class MainApp(tk.Frame):
         self.body.insert_profile(pf)
         #print("inserted to side")
         dm=DirectMessenger(pf.dsuserver,pf.username,pf.password)
+        print("add_user dm retrieve all", dm.retrieve_all())
         self.body.add_to_dm_dict(dm)
         #self.dm_dict[pf.username] = DirectMessenger(pf.dsuserver,pf.username,pf.password)
         self._current_profile.add_opened_profiles(pf.username)
@@ -514,10 +537,10 @@ class MainApp(tk.Frame):
     def send_msg(self):
         msg=self.body.get_text_entry()
         print('set view entry')
+        self.dm.send(msg,self.body._current_user)
         self.body.set_view_entry(msg)
         #print(self.body.pf_node_select())
-        print("_current_user should be guesswhat", self.body._current_user)
-        self.dm.send(msg,self.body._current_user)
+        #self.dm.send(msg,self.body._current_user)
         print("in send msg",self._current_profile.get_opened_profiles())
         
         

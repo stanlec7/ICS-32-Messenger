@@ -115,19 +115,18 @@ class DirectMessenger(DirectMessage):
     
     def retrieve_all(self) -> list:
         # returns a list of DirectMessage objects containing all messages
+        print("in retrieve_all")
         all_msg=self.all()
         self.client.sendall(all_msg.encode('utf-8'))
         rev_msg=self.client.recv(4096)
         DataTuple=ds_message_protocol.extract_json(rev_msg.decode('utf-8'))
         msgList=DataTuple.message
-        print('msg', msgList)
         index=0
         returnList=[]
         while(index<len(msgList)):
             returnList.append(msgList[index])
-            index+=1
-        returnList = sorted(returnList, key = lambda x: x[0])
-        #print(returnList)
+            index+=3
+        print(returnList)
         return returnList
 
 #dm=DirectMessenger("168.235.86.101","blahblahblah", "hello")
