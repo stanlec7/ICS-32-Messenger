@@ -14,7 +14,7 @@ from tkinter import ttk, filedialog
 from Profile import Post, Profile
 from NaClProfile import NaClProfile
 from ds_messenger import DirectMessage, DirectMessenger
-#hgjgjhgjh
+
 
 PORT = 3021
 HOST="168.235.86.101"
@@ -35,7 +35,9 @@ class Body(tk.Frame):
         self._profiles=[Profile]
         
         # After all initialization is complete, call the _draw method to pack the widgets
-        # into the Body instance 
+        # into the Body instance
+        self.firstDraw=True
+        self.night=None
         self._draw()
         self._current_user=None
         self.dm_dict={}
@@ -215,48 +217,69 @@ class Body(tk.Frame):
             usr = usr[:24] + "..."
             
         self.posts_tree.insert('', id, id, text=usr)
+
+    def _body_to_night(self):
+        self.night=True
+        self._draw()
+
+    def _body_to_night_off(self):
+        self.night=False
+        self._draw()
     
     """
     Call only once upon initialization to add widgets to the frame
     """
     def _draw(self):
-        posts_frame = tk.Frame(master=self, width=250)
-        posts_frame.pack(fill=tk.BOTH, side=tk.LEFT)
-        self.posts_tree = ttk.Treeview(posts_frame)
-        self.posts_tree.bind("<<TreeviewSelect>>", self.pf_node_select)
-        self.posts_tree.pack(fill=tk.BOTH, side=tk.TOP, expand=True, padx=5, pady=5)
+        style=ttk.Style()
+        if (self.firstDraw):
+            posts_frame = tk.Frame(master=self, width=250)
+            posts_frame.pack(fill=tk.BOTH, side=tk.LEFT)
+            self.posts_tree = ttk.Treeview(posts_frame)
+            self.posts_tree.bind("<<TreeviewSelect>>", self.pf_node_select)
+            self.posts_tree.pack(fill=tk.BOTH, side=tk.TOP, expand=True, padx=5, pady=5)
+            
 
-        entry_frame = tk.Frame(master=self, bg="")
-        entry_frame.pack(fill=tk.BOTH, side=tk.BOTTOM, expand=True)
-        
-        editor_frame = tk.Frame(master=entry_frame, bg="lightgrey")
-        editor_frame.pack(fill=tk.BOTH, side=tk.BOTTOM, expand=True)
+            entry_frame = tk.Frame(master=self, bg="")
+            entry_frame.pack(fill=tk.BOTH, side=tk.BOTTOM, expand=True)
 
-        view_frame=tk.Frame(master=entry_frame, bg="lightgrey", height= 300)
-        view_frame.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
-        
-        scroll_frame = tk.Frame(master=entry_frame, bg="blue", width=0)
-        scroll_frame.pack(fill=tk.BOTH, side=tk.LEFT, expand=False)
+            editor_frame = tk.Frame(master=entry_frame, bg="lightgrey")
+            editor_frame.pack(fill=tk.BOTH, side=tk.BOTTOM, expand=True)
 
-        
-        self.entry_editor = tk.Text(editor_frame, width=0)
-        self.entry_editor.pack(fill=tk.BOTH, side=tk.BOTTOM, expand=True, padx=0, pady=0)
-        self.entry_editor.place(x=0, y=0, height=100, width=500)
+            view_frame=tk.Frame(master=entry_frame, bg="lightgrey", height= 300)
+            view_frame.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 
-        self.viewer=tk.Text(view_frame, width=0)
-        self.viewer.pack(fill=tk.BOTH, side=tk.TOP, expand=True, padx=0, pady=0)
-        self.viewer.place(x=0, y=10, height=350, width=500)
+            scroll_frame = tk.Frame(master=entry_frame, bg="blue", width=0)
+            scroll_frame.pack(fill=tk.BOTH, side=tk.LEFT, expand=False)
 
-        
-        entry_editor_scrollbar = tk.Scrollbar(master=scroll_frame, command=self.entry_editor.yview)
-        self.entry_editor['yscrollcommand'] = entry_editor_scrollbar.set
-        entry_editor_scrollbar.pack(fill=tk.Y, side=tk.LEFT, expand=False, padx=0, pady=0)
-        entry_editor_scrollbar.place(x=0, y=100)
 
-        viewer_scrollbar = tk.Scrollbar(master=scroll_frame, command=self.viewer.yview)
-        self.viewer['yscrollcommand'] = viewer_scrollbar.set
-        viewer_scrollbar.pack(fill=tk.Y, side=tk.LEFT, expand=False, padx=0, pady=0)
-        viewer_scrollbar.place(x=0, y=10)
+            self.entry_editor = tk.Text(editor_frame, width=0)
+            self.entry_editor.pack(fill=tk.BOTH, side=tk.BOTTOM, expand=True, padx=0, pady=0)
+            self.entry_editor.place(x=0, y=0, height=60, width=500) #edit
+
+            self.viewer=tk.Text(view_frame, width=0)
+            self.viewer.pack(fill=tk.BOTH, side=tk.TOP, expand=True, padx=0, pady=0)
+            self.viewer.place(x=0, y=10, height=350, width=500)
+
+
+            entry_editor_scrollbar = tk.Scrollbar(master=scroll_frame, command=self.entry_editor.yview)
+            self.entry_editor['yscrollcommand'] = entry_editor_scrollbar.set
+            entry_editor_scrollbar.pack(fill=tk.Y, side=tk.LEFT, expand=False, padx=0, pady=0)
+            entry_editor_scrollbar.place(x=0, y=100)
+
+            viewer_scrollbar = tk.Scrollbar(master=scroll_frame, command=self.viewer.yview)
+            self.viewer['yscrollcommand'] = viewer_scrollbar.set
+            viewer_scrollbar.pack(fill=tk.Y, side=tk.LEFT, expand=False, padx=0, pady=0)
+            viewer_scrollbar.place(x=0, y=10)
+            self.firstDraw=False
+        else:
+            if(self.night):
+                style.configure("Treeview", background="grey", foreground="grey", fieldbackground="grey")
+                self.entry_editor.config(bg="grey")
+                self.viewer.config(bg="grey")
+            if(not self.night):
+                style.configure("Treeview", background="white", foreground="white", fieldbackground="white")
+                self.entry_editor.config(bg="white")
+                self.viewer.config(bg="white")
         
 
 """
@@ -319,9 +342,12 @@ class Footer(tk.Frame):
         save_button.configure(command=self.send_click)
         save_button.pack(fill=tk.BOTH, side=tk.RIGHT, padx=5, pady=5)
 
+        #online button that's no longer needed
+        '''
         self.chk_button = tk.Checkbutton(master=self, text="Online", variable=self.is_online)
         self.chk_button.configure(command=self.online_click) 
         self.chk_button.pack(fill=tk.BOTH, side=tk.RIGHT)
+        '''
 
         self.footer_label = tk.Label(master=self, text="Ready.")
         self.footer_label.pack(fill=tk.BOTH, side=tk.LEFT, padx=5)
@@ -523,7 +549,14 @@ class MainApp(tk.Frame):
         else:
             self.footer.set_status("Offline")
 
-    #def send_to_rec(self):
+    def night_on(self):
+        self.footer.config(bg="grey")
+        self.body._body_to_night()
+        
+
+    def night_off(self):
+        self.footer.config(bg="")
+        self.body._body_to_night_off()
         
         
     
@@ -540,6 +573,11 @@ class MainApp(tk.Frame):
         menu_file.add_command(label='Open...', command=self.open_profile)
         menu_file.add_command(label='Close', command=self.close)
         menu_file.add_command(label='Add User', command=self.add_user)
+
+        options_menu = tk.Menu(menu_bar)
+        menu_bar.add_cascade(menu=options_menu, label='Options')
+        options_menu.add_command(label='Night Mode On', command=self.night_on)
+        options_menu.add_command(label='Night Mode Off', command=self.night_off)
         
         # NOTE: Additional menu items can be added by following the conventions here.
         # The only top level menu item is a 'cascading menu', that presents a small menu of
