@@ -107,10 +107,10 @@ class Body(tk.Frame):
         # textList contains a list of tuples in the order of (timestamp, user, message)
 
         for p in range(len(textList)):
-            text=textList[p]
+            text=textList[p][2]
             print("text",text)
-            self.set_view_entry(str(text)+'\n', user=None)
-            self.viewer.insert(0.0, str(text)+"\n")
+            self.set_view_entry(str(text), user=None)
+            #self.viewer.insert(0.0, str(text)+"\n")
 
     
     """
