@@ -105,11 +105,17 @@ class Body(tk.Frame):
         print("should be newusercreated dm", dm.username)
         textList=dm.retrieve_all()
         # textList contains a list of tuples in the order of (timestamp, user, message)
+        recipientDm = DirectMessenger("168.235.86.101","guesswhat", "idk")
+        textListRecipient=recipientDm.retrieve_all()
+        allText=textList + textListRecipient
+        allText.sort(key=lambda tup:tup[0])
+        
 
-        for p in range(len(textList)):
-            text=textList[p]
+        for p in range(len(allText)):
+            text=allText[p]
             print("text",text)
             self.set_view_entry(str(text)+'\n', user=None)
+            #if (
             self.viewer.insert(0.0, str(text)+"\n")
 
     
@@ -264,6 +270,9 @@ class Body(tk.Frame):
             self.viewer=tk.Text(view_frame, width=0)
             self.viewer.pack(fill=tk.BOTH, side=tk.TOP, expand=True, padx=0, pady=0)
             self.viewer.place(x=0, y=10, height=350, width=500)
+            self.viewer.tag_config('my retrieve', foreground="red")
+            self.viewer.tag_config('recipient retrieve', foreground="red")
+
 
 
             entry_editor_scrollbar = tk.Scrollbar(master=scroll_frame, command=self.entry_editor.yview)
