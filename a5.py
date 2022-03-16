@@ -109,6 +109,7 @@ class Body(tk.Frame):
         for p in range(len(textList)):
             text=textList[p]
             print("text",text)
+            self.set_view_entry(str(text)+'\n', user=None)
             self.viewer.insert(0.0, str(text)+"\n")
     
     """
@@ -132,9 +133,11 @@ class Body(tk.Frame):
         self.viewer.delete(0.0, 'end')
         self.viewer.insert(0.0, text)
 
-    def set_view_entry(self, text:str):
+    def set_view_entry(self, text:str, user=None):
         #self.viewer.delete(0.0, 'end')
-        self.viewer.insert(0.0, text+"\n")
+        if user == 'me':
+            pass
+        self.viewer.insert("end", text+"\n")
         self.entry_editor.delete(0.0, 'end')
         
         
@@ -149,8 +152,8 @@ class Body(tk.Frame):
         # advantage of the self.insert_posttree method for updating the posts_tree
         # widget.
         self._posts=posts
-        for p in range(len(posts)):
-            self.insert_post(posts[p])
+        # for p in range(len(posts)):
+        #     self.insert_post(posts[p])
 
     def set_profiles(self, pf:list):
         print("in set pf")

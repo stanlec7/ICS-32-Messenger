@@ -129,8 +129,9 @@ class DirectMessenger(DirectMessage):
         return returnList
 
 #dm=DirectMessenger("168.235.86.101","blahblahblah", "hello")
-dm=DirectMessenger("168.235.86.101","newusercreated","strongpassword")
-dm2=DirectMessenger("168.235.86.101","guesswhat", "idk")
+if __name__ == '__main__':
+    dm=DirectMessenger("168.235.86.101","newusercreated","strongpassword")
+    dm2=DirectMessenger("168.235.86.101","guesswhat", "idk")
 
 #print("send to blahblahblah", dm2.send("are you getting this blahblahblah?", "blahblahblah"))
 
