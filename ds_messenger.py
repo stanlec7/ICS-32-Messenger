@@ -120,11 +120,13 @@ class DirectMessenger(DirectMessage):
         rev_msg=self.client.recv(4096)
         DataTuple=ds_message_protocol.extract_json(rev_msg.decode('utf-8'))
         msgList=DataTuple.message
+        print('msg', msgList)
         index=0
         returnList=[]
         while(index<len(msgList)):
             returnList.append(msgList[index])
-            index+=3
+            index+=1
+        returnList = sorted(returnList, key = lambda x: x[0])
         #print(returnList)
         return returnList
 

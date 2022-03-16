@@ -104,12 +104,14 @@ class Body(tk.Frame):
         print("inside set_view_when_click_pf")
         print("should be newusercreated dm", dm.username)
         textList=dm.retrieve_all()
-        print(textList)
+        # textList contains a list of tuples in the order of (timestamp, user, message)
+
         for p in range(len(textList)):
             text=textList[p]
             print("text",text)
             self.set_view_entry(str(text)+'\n', user=None)
             self.viewer.insert(0.0, str(text)+"\n")
+
     
     """
     Returns the text that is currently displayed in the entry_editor widget.
@@ -276,7 +278,7 @@ class Body(tk.Frame):
             self.firstDraw=False
         else:
             if(self.night):
-                style.configure("Treeview", background="grey" fieldbackground="grey")
+                style.configure("Treeview", background="grey", fieldbackground="grey")
                 self.entry_editor.config(bg="grey")
                 self.viewer.config(bg="grey")
             if(not self.night):

@@ -37,9 +37,12 @@ def extract_json(json_msg:str) -> DataTuple:
                 #s1=json_obj['response']['messages'][x]['message'] +' '+ json_obj['response']['messages'][x]['from'] +' '+ json_obj['response']['messages'][x]['timestamp']
                 #for key in dmList[x]:
                     #print(dmList[x][key])
-                message.append(json_obj['response']['messages'][x]['message'])
-                message.append(json_obj['response']['messages'][x]['from'])
-                message.append(json_obj['response']['messages'][x]['timestamp'])
+                
+                timestamp = json_obj['response']['messages'][x]['timestamp']
+                user = json_obj['response']['messages'][x]['from']
+                msg = json_obj['response']['messages'][x]['message']
+
+                message.append((timestamp,user,msg))
                 #dmList[x]=dm
         except KeyError:
             message="hi"
