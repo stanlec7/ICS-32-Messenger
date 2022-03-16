@@ -321,7 +321,26 @@ class Footer(tk.Frame):
         self.footer_label.pack(fill=tk.BOTH, side=tk.LEFT, padx=5)
 
 
-class MainApp(tk.Frame):
+class NightLight():
+    """
+    Returns true for night on or night off
+    """
+
+    def night_on(self):
+        """
+        True for night on
+        """
+        return True
+        
+
+    def night_off(self):
+        """
+        True for night off
+        """
+        return True
+
+
+class MainApp(tk.Frame, NightLight):
     """
     A subclass of tk.Frame that is responsible for drawing all of the widgets
     in the main portion of the root frame. Also manages all method calls for
@@ -336,7 +355,7 @@ class MainApp(tk.Frame):
         self._profile_filename = None
         self.added_users=[Profile]
         self.dm=None
-
+    
 
     def new_profile(self):
         """
@@ -438,22 +457,24 @@ class MainApp(tk.Frame):
             self.footer.set_status("Offline")
 
 
-    def night_on(self):
+    def night_true(self):
         """
         Turn on night mode.
         """
-        self.footer.config(bg="grey")
-        self.body._body_to_night()
+        if NightLight.night_on:
+            self.footer.config(bg="grey")
+            self.body._body_to_night()
         
 
-    def night_off(self):
+    def night_false(self):
         """
         Turn off night mode.
         """
-        self.footer.config(bg="")
-        self.body._body_to_night_off()
+        if NightLight.night_off:
+            self.footer.config(bg="")
+            self.body._body_to_night_off()      
         
-        
+
     def _draw(self):
         """
         Build a menu and add it to the root frame.
@@ -468,8 +489,12 @@ class MainApp(tk.Frame):
         menu_file.add_command(label='Add User', command=self.add_user)
         options_menu = tk.Menu(menu_bar)
         menu_bar.add_cascade(menu=options_menu, label='Options')
-        options_menu.add_command(label='Night Mode On', command=self.night_on)
-        options_menu.add_command(label='Night Mode Off', command=self.night_off)
+        if NightLight.night_on == True:
+            cmd=self.night_true()
+        elif NightLight.night_off == True:
+            cmd=self.night_false()
+        options_menu.add_command(label='Night Mode On', command=self.night_true)
+        options_menu.add_command(label='Night Mode Off', command=self.night_false)
         self.body = Body(self.root, self._current_profile)
         self.body.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
         self.footer = Footer(self.root, save_callback=self.save_profile, online_callback=self.online_changed,send_callback=self.send_msg)
@@ -486,6 +511,7 @@ class MainApp(tk.Frame):
             pass
         finally:
             self.root.after(5000,self.check_new_msg)
+
 
 
 if __name__ == "__main__":
